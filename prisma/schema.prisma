@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.sql"
+}
+
+
+model User {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  email     String?  @unique
+  role      Int     @default(0) // user = 0; admin = 1
+}
+
+model InjuryReport {
+  id             Int      @id @default(autoincrement())
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  reporterName   String
+  injuryDateTime DateTime
+  reportDateTime DateTime
+  bodyMap        String
+  injuries       Injury[]
+}
+
+model Injury {
+  id         Int          @id @default(autoincrement())
+  reportId   Int
+  label      String
+  details    String
+  encircleId String
+  report     InjuryReport @relation(fields: [reportId], references: [id])
+}

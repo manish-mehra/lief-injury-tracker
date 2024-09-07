@@ -2,7 +2,9 @@
 import { createSchema, createYoga } from 'graphql-yoga'
 
 import { resolvers } from '../../../../graphql/resolvers'
-import { typeDefs } from '../../../../graphql/schema' 
+import { typeDefs } from '../../../../graphql/schema'
+import { createContext } from '../../../../graphql/context'
+
 
 const { handleRequest } = createYoga({
   schema: createSchema({
@@ -15,7 +17,7 @@ const { handleRequest } = createYoga({
  
   // Yoga needs to know how to create a valid Next response
   fetchAPI: { Response },
-  context: prisma
+  context: createContext
 })
  
 export { handleRequest as GET, handleRequest as POST, handleRequest as OPTIONS }

@@ -22,5 +22,16 @@ export const typeDefs = `
    allInjuryReports: [InjuryReport!]!
    injuries(reportId: Int!): [Injury!]!
  }
+  
+  type Mutation {
+    test(name: String!): User
+  }
+
+
+  type User {
+    id: ID!
+    name: String!
+  }
+
 
 `

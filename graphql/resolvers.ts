@@ -18,16 +18,23 @@ import { PrismaClient } from "@prisma/client/extension";
 
 export const resolvers = {
     Query: {
-      injuryReport: async (_: any, { id }: {id: string})=> {
+      injuryReport: async (_: any, { id }: {id: string}, context: any)=> {
+        await context
+        console.log("CTX", context)
         return await prisma.injuryReport.findUnique({
           where: { id: parseInt(id) },
           include: { injuries: true }
         })
       },
 
-      // TODO: fetch only report associated with authenticated user
-      allInjuryReports: async () => {
-        return await prisma.injuryReport.findMany()
+      // TODO: change db model. reporterName -> reporterId 
+      allInjuryReports: async (_: any, { name }: {name: string}, ctx:any) => {
+        if (!ctx.user) {
+          throw new Error("Not authenticated")
+        }
+        return await prisma.injuryReport.findMany({
+          where: {reporterName: ctx.user.name}
+        })
       },
 
       injuries: async (_: any, { reportId }: {reportId: string}) => {
@@ -37,9 +44,8 @@ export const resolvers = {
       }
     },
     Mutation: {
-      test: (_: any, { name }: {name: string}, context:any) => {
-
-        if (!context.user) {
+      test: async (_: any, { name }: {name: string}, context:any) => {
+        if (!(await context).user) {
           // TODO: return err message instead of throwing error
           throw new Error("Not authenticated")
         }  

@@ -4,3 +4,24 @@
   margin: 0;
   box-sizing: border-box;
 }
+
+
+
+.selected{
+  fill: #c25f60!important;
+}
+
+/* Group all body parts */
+.leg:hover, .foot:hover, .hips:hover, .back:hover, 
+.waist:hover, .chest:hover, .neck:hover, .shoulder:hover, 
+.arm:hover, .hand:hover, .head:hover { 
+  fill: #ffd814;
+  cursor: pointer;
+}
+svg:hover *:not([class]) {
+  cursor: not-allowed;
+}
+
+
+/* CUSTOM STYLING */
+

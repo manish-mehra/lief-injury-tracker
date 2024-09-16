@@ -1,11 +1,9 @@
 'use client'
 
-import { Button } from 'antd'
 import { Flex, Layout, ConfigProvider} from 'antd';
-import HeaderSection from './components/header'
 const { Content } = Layout
 import InjuryReports from './components/injury_reports';
-
+import AddInjuryDrawer from './components/add_injury_drawer';
 const contentStyle: React.CSSProperties = {
   textAlign: 'center',
   minHeight: 120,
@@ -35,11 +33,11 @@ export default function Home() {
     }}>
         <Flex gap="middle" wrap>
           <Layout style={layoutStyle}>
-            <HeaderSection/>
+            {/* <HeaderSection/> */}
             <Content style={contentStyle}>
               <Flex style={{marginBottom: "2em"}} justify='space-between'>
                 <h1>Injury Reports</h1>
-                <Button type='primary'>Add Injury</Button>
+                <AddInjuryDrawer/>
               </Flex>
               <Flex style={{width: "100%"}}>
               <InjuryReports/>

@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
 import { UserProvider } from '@auth0/nextjs-auth0/client';
-import ApolloWrapper from "./ApolloWrapper";
+import ApolloWrapper from "./ApolloWrapper"
+import { AntdRegistry } from '@ant-design/nextjs-registry'
 
 export const metadata: Metadata = {
   title: "Injury Tracker - Lief",
@@ -19,7 +19,7 @@ export default function RootLayout({
         <body>
           <ApolloWrapper>
             <UserProvider>
-              {children}
+              <AntdRegistry>{children}</AntdRegistry>
             </UserProvider>
           </ApolloWrapper>
         </body>

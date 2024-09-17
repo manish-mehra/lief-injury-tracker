@@ -1,11 +1,10 @@
 import React, { useState, useCallback } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Drawer,  Space, Flex, Typography, Input } from 'antd';
+import { Button, Drawer,  Space,Tag, Flex, Typography, Input, DatePicker, DatePickerProps } from 'antd';
 import { DOMSelection } from "./add_injury/dom_helper"
 import Body from './add_injury/body'
 import InjuryList from './add_injury/injury_list'
-
-const bodyParts = ['leg', 'foot', 'hips', 'back', 'waist', 'chest', 'neck', 'shoulder', 'arm', 'hand', 'head']
+import dayjs from 'dayjs'
 
 export type PartInfo = {
   label: string,
@@ -17,7 +16,6 @@ export type ReporterInfo=  {
   date: string
 }
 
-const {displayName, Group} = Input
 
 const AddInjuryDrawer: React.FC = () => {
 
@@ -26,13 +24,14 @@ const AddInjuryDrawer: React.FC = () => {
   const showDrawer = () => setOpen(true)
   const onClose = () => {
     // cleanup...
+    setReportInfo({reporterName: "", date: new Date().toISOString()})
     setAddedPartsList(()=> []) // empty injury form list
     setOpen(false)
   }
   
   // list to keep track of selected dom parts  
   const [addedPartsList, setAddedPartsList] = useState<PartInfo[]>([]) //TODO: causes rerender on writing description
-  const [reportInfo, setReportInfo] = useState({name: "", date: new Date().getDate()})
+  const [reportInfo, setReportInfo] = useState({reporterName: "", date: new Date().toISOString()})
   /**
    * called when svg body part is clicked
    */
@@ -45,6 +44,19 @@ const AddInjuryDrawer: React.FC = () => {
       }
     setAddedPartsList((prev) => prev.filter((info) => info.label !== partClasses))
   }, [])
+
+  const onDateChange: DatePickerProps['onChange'] = (date, dateString) => {
+    if(date){
+      setReportInfo((prev) => {
+        return {
+          ...prev,
+          date: date.toISOString() 
+        }
+      })
+      return
+    }
+    alert("no date selected")
+  }
 
 
 
@@ -67,7 +79,7 @@ const AddInjuryDrawer: React.FC = () => {
           <Space>
             <Button onClick={onClose}>Cancel</Button>
             <Button onClick={()=> {
-              console.log("DATA FINALLY", addedPartsList)
+              console.log("Report Data: ", {...reportInfo, injuries: [addedPartsList]})
                onClose() // close drawer
             }} type="primary">
               Submit
@@ -75,14 +87,32 @@ const AddInjuryDrawer: React.FC = () => {
           </Space>
         }
       >
-        <Flex gap={4} style={{flexDirection: "column"}}>
-          <Body  handleCallback={DOMCallback} addedPartList = {addedPartsList}/>
-          <Flex>
-            <Input 
+        <Flex gap={"1em"} vertical>
+        
+          <Space direction='vertical'>
+            <Tag color = "default">Reporter</Tag>
+            <Space>
+              <Input 
               placeholder='Reporter Name'
-              value={""}
+              onChange={e => {
+                setReportInfo((prev)=> {
+                  return {
+                    ...prev,
+                    reporterName: e.target.value
+                  }
+                })
+              }}
+              value={reportInfo.reporterName}
               />
-          </Flex>
+              <DatePicker 
+                onChange={onDateChange} 
+                format={"DD, MMMM YYYY"}
+                value={dayjs(reportInfo.date)}
+                />
+            </Space>
+          </Space>
+
+          <Body  handleCallback={DOMCallback} addedPartList = {addedPartsList}/>
           <InjuryList
             addedPartsList = {addedPartsList} 
             setAddedPartsList = {setAddedPartsList}

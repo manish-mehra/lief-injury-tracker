@@ -70,7 +70,7 @@ const columns: TableProps<DataType>['columns'] = [
   },
   {
     title: 'View',
-    key: 'action',
+    key: 'view',
     render: (_, record) => (
       <Button size="middle" onClick={()=> console.log(record)}>
         View
@@ -79,7 +79,7 @@ const columns: TableProps<DataType>['columns'] = [
   },
   {
     title: 'Update',
-    key: 'action',
+    key: 'update',
     render: (_, record) => (
       <Button size="middle" onClick={()=> console.log(record)}>
         Update
@@ -88,7 +88,7 @@ const columns: TableProps<DataType>['columns'] = [
   },
   {
     title: 'Delete',
-    key: 'action',
+    key: 'delete',
     render: (_, record) => (
       <Button size="middle" onClick={()=> console.log(record)}>
         Delete
@@ -150,41 +150,8 @@ const InjuryReports: React.FC = () => {
 
   return(
     <Flex style={{width: "100%"}}>
-      {/* <div>
-        < Button
-        type = "primary"
-        onClick={() => {
-          testMut({variables: {
-            name: "say my name"
-          }})
-        }}>Add mutation</Button>
-        <span>{mutLoading && "submitting"}</span>
-        <span>{mutError && `Submission error: ${mutError.message}`}</span>
-        <span>{res && `${res.test.id} | ${res.test.name}`}</span>
-      </div>
-      {loading ? (
-        <p>Loading data...</p>
-      ) : error ? (
-        <p>Error: {error.message}</p>
-      ) : (
-        <div>
-          <h3>Injury Reports:</h3>
-          {data && data.allInjuryReports?.length > 0 ? (
-            <div>
-              {data.allInjuryReports.map((report: any) => (
-                <div key={report.id}>
-                  <p>Reporter Name: {report.reporterName}</p>
-                  <p>Injury DateTime: {report.injuryDateTime}</p>
-                  <p>reportDateTime: {report.reportDateTime}</p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p>No injury reports found</p>
-          )}
-        </div>
-      )} */}
         <Table 
+        rowKey={data => data.id}
         columns={columns} 
         dataSource={data.slice(0, 2)} 
         style={{width: "100%"}} 

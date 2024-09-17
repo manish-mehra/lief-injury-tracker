@@ -1,46 +1,25 @@
- 
-export function ToggleSelectedClass(partClass: string) {
-    const parts = document.querySelectorAll(partClass)
-    for(let part of parts){
-        const isSelected = part.classList.contains("selected")
-        if (!isSelected) {
-            part.classList.add("selected")
-            continue
-        }
-        part.classList.remove("selected")
-    }
-}
-
-export function RemoveSelectedClass(bodyParts: string[]){
-    bodyParts.forEach((part) => {
-        const partEl = document.querySelectorAll("." + part)
-        for(let part of partEl){
-            const isSelected = part.classList.contains("selected")
-            if (isSelected) {
-                part.classList.remove("selected")
-            }
-        }
-    })
-}
-
 
 export type DOMSelection = {
     partClasses: string,
     selected: Boolean
 }
 /**
- * add event listener to two svg body image
- * add selected or remove selected class on clicked area
- * pass: | 1. classes 2. selected status | to callback
+ * Attaches a click event listener to the provided SVG element and invokes the specified callback when the event occurs.
+ * 
+ * Throws an error if the provided SVG element is invalid (null or undefined).
+ * 
+ * @param svgEl - The SVG element to which the click event listener will be attached.
+ * @param callback - A function to be invoked when the click event occurs on the SVG element. Receives the event as an argument.
+ * @throws Error - Throws an error if the provided SVG element is invalid.
  */
-export function handleBodySelection(callback: Function){
-    const svgEl = document.getElementsByTagName("svg")
-    for(let el of svgEl){
-        // remove listner if any
-        // el.removeEventListener("click", (event: Event) => BodyClickHandler(event, callback)) 
-        el.addEventListener("click", (event: Event) => BodyClickHandler(event, callback))
+export function addSvgClickListener(svgEl: SVGSVGElement, callback: Function) {
+    if (!svgEl) {
+        throw new Error("SVG element is invalid.");
     }
+    svgEl.addEventListener('click', (event: Event) => BodyClickHandler(event, callback));
 }
+
+
 
 const BodyClickHandler = (event: Event, callback: Function)=> {
     const elType = event.target as HTMLElement  

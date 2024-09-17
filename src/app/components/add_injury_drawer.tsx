@@ -1,33 +1,51 @@
 import React, { useState, useCallback } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
-import { Button, Drawer, Tag, Space, Flex, Typography } from 'antd';
-import { DOMSelection, ToggleSelectedClass, RemoveSelectedClass } from "./add_injury/dom_helper"
+import { Button, Drawer,  Space, Flex, Typography, Input } from 'antd';
+import { DOMSelection } from "./add_injury/dom_helper"
 import Body from './add_injury/body'
-import InjuryForm from './add_injury/injury_form'
-import { labelToReadable } from "@/app/utils"
+import InjuryList from './add_injury/injury_list'
 
 const bodyParts = ['leg', 'foot', 'hips', 'back', 'waist', 'chest', 'neck', 'shoulder', 'arm', 'hand', 'head']
 
+export type PartInfo = {
+  label: string,
+  description: string
+}
+
+export type ReporterInfo=  {
+  name: string,
+  date: string
+}
+
+const {displayName, Group} = Input
+
 const AddInjuryDrawer: React.FC = () => {
-  const [open, setOpen] = useState(false);
 
-  const showDrawer = () => {
-    setOpen(true);
-  };
+  const [open, setOpen] = useState(false)
 
+  const showDrawer = () => setOpen(true)
   const onClose = () => {
-    setOpen(false);
+    // cleanup...
+    setAddedPartsList(()=> []) // empty injury form list
+    setOpen(false)
   }
+  
+  // list to keep track of selected dom parts  
+  const [addedPartsList, setAddedPartsList] = useState<PartInfo[]>([]) //TODO: causes rerender on writing description
+  const [reportInfo, setReportInfo] = useState({name: "", date: new Date().getDate()})
+  /**
+   * called when svg body part is clicked
+   */
+  const DOMCallback = useCallback((domData: DOMSelection) => {
+    // update the injury-list items 
+    const {partClasses, selected} = domData
+    if(selected){
+        setAddedPartsList((prev) => [...prev, {label: partClasses, description: ""}])
+        return
+      }
+    setAddedPartsList((prev) => prev.filter((info) => info.label !== partClasses))
+  }, [])
 
-  const [domSelected, setDomSelected] = useState<DOMSelection | null>(null)
-  const [selectedList, setSelectedList] = useState<DOMSelection[]>([])
-  const [currMousePart, setCurrMousePart] = useState<DOMSelection>()
-
-    // Memoize the DOMCallback function
-    const DOMCallback = useCallback((domData: DOMSelection) => {
-      ToggleSelectedClass(domData.partClasses)
-      setDomSelected(() => domData)      
-    }, [])
 
 
   return (
@@ -49,10 +67,8 @@ const AddInjuryDrawer: React.FC = () => {
           <Space>
             <Button onClick={onClose}>Cancel</Button>
             <Button onClick={()=> {
-              // remove all selected classes
-               RemoveSelectedClass(bodyParts)
-               setSelectedList(()=> [])
-              onClose()
+              console.log("DATA FINALLY", addedPartsList)
+               onClose() // close drawer
             }} type="primary">
               Submit
             </Button>
@@ -60,8 +76,17 @@ const AddInjuryDrawer: React.FC = () => {
         }
       >
         <Flex gap={4} style={{flexDirection: "column"}}>
-          <Body  handleCallback={DOMCallback}/>
-          <InjuryForm currSelectedPart = {domSelected} selectedList = {selectedList}/>
+          <Body  handleCallback={DOMCallback} addedPartList = {addedPartsList}/>
+          <Flex>
+            <Input 
+              placeholder='Reporter Name'
+              value={""}
+              />
+          </Flex>
+          <InjuryList
+            addedPartsList = {addedPartsList} 
+            setAddedPartsList = {setAddedPartsList}
+            />
         </Flex>
         
       </Drawer>

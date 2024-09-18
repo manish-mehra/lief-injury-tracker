@@ -1,5 +1,3 @@
-import prisma from "../lib/prisma"
-import { PrismaClient } from "@prisma/client/extension";
 
 /** 
  * context.user
@@ -21,10 +19,7 @@ export const resolvers = {
       injuryReport: async (_: any, { id }: {id: string}, context: any)=> {
         await context
         console.log("CTX", context)
-        return await prisma.injuryReport.findUnique({
-          where: { id: parseInt(id) },
-          include: { injuries: true }
-        })
+        return 
       },
 
       // TODO: change db model. reporterName -> reporterId 
@@ -32,15 +27,11 @@ export const resolvers = {
         if (!ctx.user) {
           throw new Error("Not authenticated")
         }
-        return await prisma.injuryReport.findMany({
-          where: {reporterName: ctx.user.name}
-        })
+        return 
       },
 
       injuries: async (_: any, { reportId }: {reportId: string}) => {
-        return await prisma.injury.findMany({
-          where: { reportId: parseInt(reportId) }
-        })
+        return 
       }
     },
     Mutation: {

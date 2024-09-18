@@ -1,8 +1,10 @@
 // pages/api/auth/hook.ts
 
 import { NextRequest, NextResponse } from 'next/server';
-import  prisma from '../../../../../lib/prisma'
 import type { NextApiRequest, NextApiResponse } from 'next'
+import db from "../../../../../firebase/firebstore"
+import {collection, addDoc} from "firebase/firestore"
+
 
 export async function POST(req: NextRequest, res: NextResponse){
   const { email, secret } = await req.json()
@@ -27,9 +29,8 @@ export async function POST(req: NextRequest, res: NextResponse){
   // 3
   if (email) {
     // 4
-    await prisma.user.create({
-      data: { email },
-    })
+    const user = await addDoc(collection(db, "users"), {email, role: 0})
+    console.log(user.id)
     return Response.json({
       message: `User with email: ${email} has been created successfully!`,
     }, {

@@ -1,10 +1,10 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { Button, Drawer,  Space,Tag, Flex, Typography, Input, DatePicker, DatePickerProps } from 'antd';
-import { DOMSelection } from "../add_injury/dom_helper"
+import { DOMSelection } from "./dom_helper"
 import Body from './body'
 import InjuryList from './injury_list'
 import dayjs from 'dayjs'
-import { Injury, Report } from '../local_types'
+import { Injury, Report } from "../../types"
 import { DrawerState } from '../injury_reports'
 
 const InjuryDrawer = ({
@@ -12,27 +12,27 @@ const InjuryDrawer = ({
   }: {
     open: boolean, 
     setOpen:  React.Dispatch<React.SetStateAction<boolean>>,
-    report: Report | undefined
-    setReport: React.Dispatch<React.SetStateAction<Report | undefined>>
-    state?: DrawerState
+    report?: Report | undefined
+    setReport?: React.Dispatch<React.SetStateAction<Report | undefined>>
+    state: DrawerState
   }) => {
 
-    if(!report) {
+    if(state !== "add" && !report) {
       return <p>No Report Found!</p>
     }
 
   //TODO: performance issue -> causes rerender on writing description
   // list to keep track of selected dom parts  
   const [addedPartsList, setAddedPartsList] = useState<Injury[]>(
-    state !== 'edit' ? 
-    report.injuries
+    state !== 'add' ? 
+    (report?.injuries || []) 
     :
     []
   )
   
   const [reportInfo, setReportInfo] = useState(
-    state !== 'edit' ?
-    {reporterName: report.reporterName, date: report.date}
+    state !== 'add' ?
+    {reporterName: (report?.reporterName || ""), date: (report?.date || new Date().toISOString())}
     :
     {reporterName: "", date: new Date().toISOString()}
   )
@@ -69,7 +69,7 @@ const InjuryDrawer = ({
     setReportInfo({reporterName: "", date: new Date().toISOString()})
     setAddedPartsList(()=> []) // empty injury form list
     
-    setReport(undefined)
+    setReport && setReport(undefined)
     setOpen(false)
   }
 

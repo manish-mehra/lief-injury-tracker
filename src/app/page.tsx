@@ -1,9 +1,10 @@
 'use client'
-
-import { Flex, Layout, ConfigProvider} from 'antd';
+import { useState } from 'react';
+import { Flex, Layout, ConfigProvider, Button} from 'antd';
+import { PlusOutlined } from '@ant-design/icons';
 const { Content } = Layout
 import InjuryReports from './components/injury_reports';
-import AddInjuryDrawer from './components/add_injury_drawer';
+import AddInjuryDrawer from './components/Injury/injury_drawer';
 import HeaderSection from './components/header';
 const contentStyle: React.CSSProperties = {
   textAlign: 'center',
@@ -23,7 +24,8 @@ const layoutStyle = {
 
 export default function Home() {
   
-  
+  const [addInjuryDrawer, setAddInjuryDrawer] = useState(false)
+
   return (
     <ConfigProvider theme={{
      "token": {
@@ -38,7 +40,14 @@ export default function Home() {
             <Content style={contentStyle}>
               <Flex style={{marginBottom: "2em"}} justify='space-between'>
                 <h1>Injury Reports</h1>
-                <AddInjuryDrawer/>
+                <Button type="primary" onClick={()=> setAddInjuryDrawer(true)} icon={<PlusOutlined />}>
+                  Add Report
+                </Button>
+                <AddInjuryDrawer 
+                  open = {addInjuryDrawer}
+                  setOpen = {setAddInjuryDrawer}
+                  state = "add"
+                />
               </Flex>
               <Flex style={{width: "100%"}}>
               <InjuryReports/>

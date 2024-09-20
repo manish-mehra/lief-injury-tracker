@@ -3,11 +3,11 @@ import { Space, Table, Tag, Flex, Button } from 'antd'
 import type { TableProps } from 'antd'
 import { useQuery, gql, useMutation } from '@apollo/client'
 import InjuryDrawer from './Injury/injury_drawer'
-import { Injury, Report } from './local_types'
+import { Report } from "../types"
 import dayjs from 'dayjs'
 import { labelToReadable } from "@/app/utils"
 
-export type DrawerState = 'view' | 'update' | 'edit'
+export type DrawerState = "add" | "view" | "update"
 
 const TestQuery = gql`
   query {

@@ -1,5 +1,5 @@
 import { ReactSVG } from "react-svg"
-import { addSvgClickListener} from "../add_injury/dom_helper"
+import { addSvgClickListener} from "./dom_helper"
 import { memo } from "react"
 import { Flex } from 'antd';
 import { Injury } from "../local_types"

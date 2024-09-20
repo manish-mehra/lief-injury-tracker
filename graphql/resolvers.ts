@@ -14,6 +14,7 @@
  * 
 */
 
+
 export const resolvers = {
     Query: {
       injuryReport: async (_: any, { id }: {id: string}, context: any)=> {
@@ -30,12 +31,9 @@ export const resolvers = {
         return 
       },
 
-      injuries: async (_: any, { reportId }: {reportId: string}) => {
-        return 
-      }
     },
     Mutation: {
-      test: async (_: any, { name }: {name: string}, context:any) => {
+      addInjuryReport: async (_: any, { report }: {report: }, context:any) => {
         if (!(await context).user) {
           // TODO: return err message instead of throwing error
           throw new Error("Not authenticated")
@@ -45,6 +43,6 @@ export const resolvers = {
           id: "1",
           name:  context!.user!.name,
         }
-      }
+      },
     }
 }

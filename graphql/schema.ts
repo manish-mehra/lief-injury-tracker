@@ -3,7 +3,7 @@ export const typeDefs = `
   input ReportInput {
     reporterName: String
     date: String
-    injuries: [InjuryInput!]!
+    injuries: [InjuryInput]!
   }
 
   input InjuryInput {
@@ -48,7 +48,7 @@ export const typeDefs = `
   
   type Mutation {
     addInjuryReport(report: ReportInput!): MutationResponse!
-    updateInjuryReport(id: String, report: ReportInput!): MutationResponse!
+    updateInjuryReport(id: String!, report: ReportInput!): MutationResponse!
     deleteInjuryReport(id: String!): MutationResponse!
   }
 

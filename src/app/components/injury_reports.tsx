@@ -9,70 +9,34 @@ import { labelToReadable } from "@/app/utils"
 
 export type DrawerState = "add" | "view" | "update"
 
-const TestQuery = gql`
-  query {
-    allInjuryReports {
-      id
-      reporterName
+
+
+const GET_ALL_INJURY_REPORTS = gql`
+  query GetAllReport{
+    getAllInjuryReports{
+      success
+      message
+      data {
+        id
+        reporterName,
+        date,
+        injuries {
+          label,
+          description
+        }
+      }
     }
   }
 `
 
-
-const TEST_MUTATION = gql`
-  mutation Test($name: String!){
-    test(name: $name) {
-      id
-      name
+const DELTE_A_REPORT = gql`
+  mutation DeleteInjuryReport($id: String!){
+    deleteInjuryReport(id: $id){
+      success,
+      message
     }
   }
 `
-
-
-
-const data: Report[] = [
-  {
-    "id": "1",
-    "reporterName": "John Doe",
-    "date": "2023-05-12T00:00:00.000Z",
-    "injuries": [
-      { "label": ".leg.left.lower", "description": "Twisted ankle during soccer game" },
-      { "label": ".head", "description": "Hit head during a fall" }
-    ]
-  },
-  {
-    "id": "2",
-    "reporterName": "Jane Smith",
-    "date": "2024-02-15T00:00:00.000Z",
-    "injuries": [
-      { "label": ".arm.right.upper", "description": "Fell off a ladder" }
-    ]
-  },
-  {
-    "id": "3",
-    "reporterName": "Michael Johnson",
-    "date": "2023-11-20T00:00:00.000Z",
-    "injuries": [
-      { "label": ".hand", "description": "Sliced finger while cooking" }
-    ]
-  },
-  {
-    "id": "4",
-    "reporterName": "Emily Davis",
-    "date": "2024-04-05T00:00:00.000Z",
-    "injuries": [
-      { "label": ".hand", "description": "Touched hot stove" }
-    ]
-  },
-  {
-    "id": "5",
-    "reporterName": "David Lee",
-    "date": "2023-08-25T00:00:00.000Z",
-    "injuries": [
-      { "label": ".hips.left", "description": "Fell while skateboarding" }
-    ]
-  }
-]
 
 // REMINDER: dummy data is wrong for body parts.
 
@@ -86,6 +50,13 @@ const InjuryReports: React.FC = () => {
   const [currViewRecord, setCurrViewRecord] = useState<Report>()
   const [currUpdateRecord, setCurrUpdateRecord] = useState<Report>()
 
+  const { loading: getReportLoading, error: getRerportError, data: getReportData } = useQuery(GET_ALL_INJURY_REPORTS)
+  const [deleteInjuryReport, { data: deleteInjuryData, loading: deleteInjuryLoading, error: deleteInjuryError }] = useMutation(DELTE_A_REPORT, {
+    refetchQueries: [
+      'GetAllReport' // Query name
+    ],
+  })
+  
   useEffect(()=> {
     if(currViewRecord){
       setView(true)
@@ -151,7 +122,7 @@ const InjuryReports: React.FC = () => {
       title: 'Delete',
       key: 'delete',
       render: (_, record) => (
-        <Button size="middle" onClick={()=> console.log(record)}>
+        <Button size="middle" onClick={()=> deleteInjuryReport({variables: {id: record.id}})}>
           Delete
         </Button>
       ),
@@ -161,14 +132,18 @@ const InjuryReports: React.FC = () => {
 
   return(
     <Flex style={{width: "100%"}}>
-        <Table 
-        rowKey={data => data.id}
-        columns={columns} 
-        dataSource={data} 
-        style={{width: "100%"}} 
-        scroll={{x: 700}}
-        loading = {false} 
+        {
+          !getRerportError && 
+          <Table 
+          rowKey={data => data.id}
+          columns={columns} 
+          dataSource={getReportData && getReportData.getAllInjuryReports.data} 
+          style={{width: "100%"}} 
+          scroll={{x: 700}}
+          loading = {getReportLoading || deleteInjuryLoading} 
+          
         />
+        }
         {/* COMPONENT BAD ANimation because of this */}
         {
           currViewRecord && <InjuryDrawer

@@ -1,11 +1,50 @@
 import React, { useState } from 'react';
-import { Button, Drawer,  Space,Tag, Flex, Typography, Input, DatePicker, DatePickerProps } from 'antd';
+import { Button, Drawer,  Space,Tag, Flex, Typography, Input, DatePicker, DatePickerProps, notification } from 'antd';
 import { DOMSelection } from "./dom_helper"
 import Body from './body'
 import InjuryList from './injury_list'
 import dayjs from 'dayjs'
 import { Injury, Report } from "../../types"
 import { DrawerState } from '../injury_reports'
+
+import { gql, useMutation } from '@apollo/client'
+
+const ADD_INJURY_REPORT = gql`
+  mutation AddInjuryReport($report: ReportInput!) {
+  addInjuryReport(report: $report) {
+    success
+    message
+  }
+}
+`
+
+const UPDATE_INJURY_REPORT = gql`
+  mutation UpdateInjuryReport($id:String!, $report: ReportInput!){
+    updateInjuryReport(id: $id, report:$report){
+      success
+      message
+    }
+  }
+`
+
+type ReportInfo = {
+  reporterName: string
+  date: string
+}
+
+type NotificationType = 'success' | 'info' | 'warning' | 'error';
+const openNotification = (type:  NotificationType,message: string, description: string) => {
+  notification.open({
+    message,
+    description,
+    type,
+    duration: 2,
+    showProgress: true,
+    onClick: () => {
+      console.log('Notification Clicked!')
+    },
+  })
+}
 
 const InjuryDrawer = ({
   open, setOpen, report, setReport, state
@@ -30,7 +69,7 @@ const InjuryDrawer = ({
     []
   )
   
-  const [reportInfo, setReportInfo] = useState(
+  const [reportInfo, setReportInfo] = useState<ReportInfo>(
     state !== 'add' ?
     {reporterName: (report?.reporterName || ""), date: (report?.date || new Date().toISOString())}
     :
@@ -73,6 +112,43 @@ const InjuryDrawer = ({
     setOpen(false)
   }
 
+  const [addInjuryReport, { data: addInjuryData, loading: addInjuryLoading, error: addInjuryError }] = useMutation(ADD_INJURY_REPORT, {
+    refetchQueries: [
+      'GetAllReport' // Query name
+    ],
+  })
+
+  const [updateInjuryReport, { data: updateInjuryData, loading: updateInjuryLoading, error: updateInjuryError }] = useMutation(UPDATE_INJURY_REPORT, {
+    refetchQueries: [
+      'GetAllReport' // Query name
+    ],
+  })
+  
+
+  const handleAddInjuryReport = (reportInfo: ReportInfo, injuries: Injury[])=> {
+    if(state === "add"){
+      addInjuryReport({variables: {
+        report: {...reportInfo, injuries}
+      }})
+      .then(() => {
+        openNotification('success', "Report Added", addInjuryData?.message)
+        onClose()
+      })
+      return
+    }
+    if(state === "update") {
+      updateInjuryReport({variables: {
+        id: report!.id,
+        report: {...reportInfo, injuries}
+      }})
+      .then(() => {
+        openNotification('success', "Report Updated", updateInjuryData?.message)
+        onClose()
+      })
+      return
+    }
+  }
+
   return (
     <>
       <Drawer
@@ -89,13 +165,25 @@ const InjuryDrawer = ({
         extra={
           state !== 'view' && (
             <Space>
-              <Button onClick={onClose}>Cancel</Button>
-              <Button 
-              onClick={()=> {
-                console.log("Report Data: ", {...reportInfo, injuries: [addedPartsList]})
-                onClose() // close drawer
-              }} type="primary">
-                Submit
+              <Button
+                disabled = {addInjuryLoading || updateInjuryLoading} 
+                onClick={onClose}
+                >Cancel
+                </Button>
+              <Button
+                disabled = {addInjuryLoading || updateInjuryLoading}
+                onClick={()=> {
+                  handleAddInjuryReport(reportInfo, addedPartsList)
+                }} type="primary"
+              >
+                {
+                state === "add" ? 
+                  addInjuryLoading ?
+                    "Submitting..." : "Submit"
+                  : 
+                  updateInjuryLoading ?
+                    "Updating..." :  "Update"
+              }
               </Button>
           </Space>
           )

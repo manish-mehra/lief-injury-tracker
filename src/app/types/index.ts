@@ -10,4 +10,9 @@ export type Report = {
     date: string; // ISO string format
     injuries: Injury[];
 }
-  
+
+export type ReportInput = {
+  reporterName: string;
+  date: string; // ISO string format
+  injuries: Injury[];
+}

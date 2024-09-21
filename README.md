@@ -4,15 +4,6 @@
 
 This application is an Injury Tracking System built for organizations such as the police to easily record and track injuries reported by individuals. It provides a user-friendly interface for creating, viewing, updating, and deleting injury reports, with a unique feature allowing users to visually mark injuries on a body map.
 
-## Tech Stack
-
-- Frontend: Next.js (App Router)
-- Backend: Firebase
-- API: GraphQL
-- Authentication: Auth0
-- UI Library: Ant Design
-- SVG Handling: ReactSvg
-
 ## Key Features
 
 1. **User Authentication**
@@ -37,6 +28,37 @@ This application is an Injury Tracking System built for organizations such as th
    - Click-to-select body parts
    - Synchronized selection between front and back views
    - Automatic labeling of selected areas
+
+## Tech Stack
+
+- Frontend: Next.js (App Router)
+- Backend: Firebase
+- API: GraphQL
+- Authentication: Auth0
+- UI Library: Ant Design
+- SVG Handling: ReactSvg
+
+## Folder Structure
+- firebase/
+- graphql/
+- src/
+  └── app/
+      ├── api/
+      │   ├── auth/
+      │   │   ├── [auth0]/     # Dynamic login/logout routes
+      │   │   └── hook/        # Route invoked by Auth0 to create a new user in Firebase after signup
+      │   └── graphql/
+      ├── components/
+      │   ├── injury/          # Components related to adding injury and drawer component
+      |   ├────├── body.tsx    # Bodies svg
+      |   ├────├── dom_helper.tsx # contain function to add eventlistener to svgs
+      |   ├────├── injury_drawer.tsx # Injury form drawer
+      |   ├────├── injury_list.tsx  # List of current injuries with label and description
+      │   ├── header.tsx
+      │   └── injury_reports.tsx  # Component listing all injury reports
+      ├── types/
+      └── utils/
+- static/   # Contains body SVG image
 
 ## GraphQL Types and Endpoints
 
@@ -63,7 +85,6 @@ type Mutation {
   deleteInjuryReport(id: String!): MutationResponse!
 }
 ```
-
 
 ## Authentication Flow
 

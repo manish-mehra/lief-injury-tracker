@@ -1,4 +1,5 @@
 # Injury Tracking System
+![Screenshot from 2024-09-22 01-00-12](https://github.com/user-attachments/assets/4575f35b-42c4-49ec-b8b6-d0762335955a)
 
 ## Overview
 
@@ -39,27 +40,28 @@ This application is an Injury Tracking System built for organizations such as th
 - SVG Handling: ReactSvg
 
 ## Folder Structure
-- firebase/
-- graphql/
-- src/
+```
+* firebase/
+* graphql/
+* src/ \n
   └── app/
       ├── api/
       │   ├── auth/
-      │   │   ├── [auth0]/     # Dynamic login/logout routes
-      │   │   └── hook/        # Route invoked by Auth0 to create a new user in Firebase after signup
+      │   │   ├── [auth0]/       # Dynamic login/logout routes
+      │   │   └── hook/          # Route invoked by Auth0 to create a new user in Firebase after signup
       │   └── graphql/
       ├── components/
-      │   ├── injury/          # Components related to adding injury and drawer component
-      |   ├────├── body.tsx    # Bodies svg
-      |   ├────├── dom_helper.tsx # contain function to add eventlistener to svgs
-      |   ├────├── injury_drawer.tsx # Injury form drawer
-      |   ├────├── injury_list.tsx  # List of current injuries with label and description
+      │   ├── injury/            # Components related to adding injury and drawer component
+      │   │   ├── body.tsx       # Bodies SVG
+      │   │   ├── dom_helper.tsx # Contains function to add event listener to SVGs
+      │   │   ├── injury_drawer.tsx # Injury form drawer
+      │   │   ├── injury_list.tsx  # List of current injuries with labels and descriptions
       │   ├── header.tsx
       │   └── injury_reports.tsx  # Component listing all injury reports
       ├── types/
       └── utils/
 - static/   # Contains body SVG image
-
+```
 ## GraphQL Types and Endpoints
 
 ```graphql
@@ -103,6 +105,8 @@ One of the core features of this Injury Tracking System is the ability for users
 - Body parts are assigned specific classes (e.g., "hand left") for easy identification and manipulation.
 
 ### Interaction Mechanism
+
+![Screenshot from 2024-09-22 02-24-23](https://github.com/user-attachments/assets/9cb246bf-f4cf-4fa8-accf-3d334314193b)
 
 1. **SVG Injection**: 
    - The SVG files are dynamically injected into the DOM using the ReactSvg package.

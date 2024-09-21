@@ -1,8 +1,7 @@
 import { List, Input, Button, Tag, Flex, ConfigProvider, Typography} from 'antd'
 import { InfoCircleFilled, CloseCircleOutlined } from "@ant-design/icons"
 import { labelToReadable } from "@/app/utils"
-
-import { Injury } from "../local_types"
+import { Injury } from '@/app/types'
 import { DrawerState } from '../injury_reports'
 
 const { TextArea } = Input

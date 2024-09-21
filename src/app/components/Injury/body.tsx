@@ -1,10 +1,8 @@
 import { ReactSVG } from "react-svg"
 import { addSvgClickListener} from "./dom_helper"
-import { memo } from "react"
 import { Flex } from 'antd';
-import { Injury } from "../local_types"
-import { DrawerState } from '../injury_reports'
-
+import { Injury } from "@/app/types";
+import { DrawerState } from "../injury_reports";
 
 // This function syncs react injury list and svg body injury
 function domClassToggler(reactPartList: Injury[], svg: SVGSVGElement){

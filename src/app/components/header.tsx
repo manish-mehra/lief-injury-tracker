@@ -1,8 +1,7 @@
 'use client'
-import { useUser } from '@auth0/nextjs-auth0/client'
 import Link from 'next/link'
-import { Flex, Layout } from 'antd'
-
+import { Flex, Layout, Spin, Button } from 'antd'
+import { UserProfile } from '@auth0/nextjs-auth0/client'
 const { Header} = Layout
 
 
@@ -13,25 +12,25 @@ const headerStyle: React.CSSProperties = {
     paddingInline: 4,
     backgroundColor: 'black',
     display: "flex",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
+    padding: "0 1em"
   };
   
 
-export default function HeaderSection() {
-    const { user, isLoading } = useUser()
+export default function HeaderSection({user, isLoading}: {user: UserProfile | undefined, isLoading: boolean}) {
 
     return(
         <Header style={headerStyle}>
-        <p>Injury Tracking</p>
-        <Flex gap={10}>
+        <h3>Injury Tracking</h3>
+        <Flex gap={10} align='center'>
             <p className=''>
-            {isLoading && !user && "Loading user..."}
+            {isLoading && !user && <Spin/>}
             {user && user.name}
             </p>
             {user ? (
-            <div>
+            <Button type='link'>
                 <Link href="/api/auth/logout">Logout</Link>
-            </div>
+            </Button>
             ) : (
             <Link href="/api/auth/login">Login</Link>
             )}

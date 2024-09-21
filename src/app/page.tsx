@@ -1,6 +1,8 @@
 'use client'
 import { useState } from 'react';
-import { Flex, Layout, ConfigProvider, Button} from 'antd';
+import { useUser} from '@auth0/nextjs-auth0/client'
+import Link from 'next/link';
+import { Flex, Layout, ConfigProvider, Button, Spin, Space, Typography} from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 const { Content } = Layout
 import InjuryReports from './components/injury_reports';
@@ -16,8 +18,8 @@ const contentStyle: React.CSSProperties = {
 const layoutStyle = {
   // overflow: 'hidden',
   width: '100%',
-  height: "100%",
-  minHeight: "100vh"
+  height: "100%",  
+  minHeight: "100vh",
 }
 
 
@@ -25,6 +27,7 @@ const layoutStyle = {
 export default function Home() {
   
   const [addInjuryDrawer, setAddInjuryDrawer] = useState(false)
+  const { user, isLoading, error } = useUser()
 
   return (
     <ConfigProvider theme={{
@@ -36,22 +39,48 @@ export default function Home() {
     }}>
         <Flex gap="middle" wrap>
           <Layout style={layoutStyle}>
-            <HeaderSection/>
+            {user && <HeaderSection user={user} isLoading={isLoading}/>}
             <Content style={contentStyle}>
-              <Flex style={{marginBottom: "2em"}} justify='space-between'>
-                <h1>Injury Reports</h1>
-                <Button type="primary" onClick={()=> setAddInjuryDrawer(true)} icon={<PlusOutlined />}>
-                  Add Report
-                </Button>
-                <AddInjuryDrawer 
-                  open = {addInjuryDrawer}
-                  setOpen = {setAddInjuryDrawer}
-                  state = "add"
-                />
-              </Flex>
-              <Flex style={{width: "100%"}}>
-              <InjuryReports/>
-              </Flex>
+            {
+              isLoading ? 
+                <Spin/>
+              :
+              <>
+                { user ? 
+                  (<>
+                    <Flex style={{marginBottom: "2em"}} justify='space-between'>
+                      <Typography.Title level={3}>Injury Reports</Typography.Title>
+                      <Button type="primary" onClick={()=> setAddInjuryDrawer(true)} icon={<PlusOutlined />}>
+                        Add Report
+                      </Button>
+                      <AddInjuryDrawer 
+                        open = {addInjuryDrawer}
+                        setOpen = {setAddInjuryDrawer}
+                        state = "add"
+                      />
+                    </Flex>
+                    <Flex style={{width: "100%"}}>
+                      <InjuryReports/>
+                    </Flex>
+                    </>
+                    )
+                    :
+                    <Space
+                      align='center'
+                      direction='vertical'>
+                      <Typography.Title level={4}>Welcome to Lief Injury Tracking</Typography.Title>
+                      <Space direction='vertical' align='center'>
+                        <Typography.Text>Login, to start reporting injuries</Typography.Text>
+                        <Link href="/api/auth/login">
+                          <Button type='primary' size='large'>
+                            Login
+                          </Button>
+                        </Link>
+                      </Space>
+                    </Space>  
+                }
+              </>
+            }
             </Content>
           </Layout>
         </Flex>

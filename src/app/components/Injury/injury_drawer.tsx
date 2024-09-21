@@ -152,7 +152,7 @@ const InjuryDrawer = ({
   return (
     <>
       <Drawer
-        title= {`${state} Report`}
+        title= {`${state.toUpperCase()} REPORT`}
         width={660}
         onClose={onClose}
         open={open}

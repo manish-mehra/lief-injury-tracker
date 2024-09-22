@@ -106,7 +106,7 @@ One of the core features of this Injury Tracking System is the ability for users
 
 ### Interaction Mechanism
 
-![Screenshot from 2024-09-22 02-24-23](https://github.com/user-attachments/assets/9cb246bf-f4cf-4fa8-accf-3d334314193b)
+![Screenshot from 2024-09-22 13-20-02](https://github.com/user-attachments/assets/b9efbe49-642b-43f7-99ad-e1ec5602628e)
 
 1. **SVG Injection**: 
    - The SVG files are dynamically injected into the DOM using the ReactSvg package.
